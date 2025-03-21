@@ -3,10 +3,10 @@ Yooo! This is a test case for NoteMD! This is how it works:
 Plaintext can be viewed written normally, like this!
 
 Here comes the first four bars:
-| C4-q  C4-q  G4-q  G4-q | A4-q  A4-q  G4-h |
+| C4-q  C4-q  G4-q  q | A4-q  A4-q  G4-h |
 | F4-q  F4-q  E4-q  E4-q | D4-q  D4-q  C4-h |
 
 If the time signature is not specified the bar will fit as many notes as you want!
 In this next case we spesify the time signature, key and expressions:
 
-| (TIME(4/4), KEY(cmajor)) G4-q  G4-q  F4-q  F4-q | E4-q  E4-q (f) D4-h |
+| { 4/4 } { cmajor } G4-q  G4-q  F4-q  F4-q | E4-q  E4-q (f) D4-h |

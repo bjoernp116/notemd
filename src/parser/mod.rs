@@ -1,7 +1,7 @@
 #![allow(dead_code)]
 use anyhow::Result;
 
-use crate::music::{bar::Bar, note_value::NotePitch};
+use crate::music::{bar::Bar, note_value::{Accidental, NotePitch}};
 
 
 
@@ -28,12 +28,22 @@ impl Document {
     }
 
     pub fn parse_bar(input: String) -> Bar {
-        let pitch: NotePitch = NotePitch::C;
-        let octave: u8 = 0;
+        let mut pitch: char = 'C';
+        let mut octave: u8 = 0;
+        let mut accidental: Accidental = Accidental::Natural;
 
         for c in input.chars() {
             match c {
-                'A'..'H' => continue,
+                'A'..'H' => {
+                    pitch = c;
+                },
+                '#' | 'b' | 'n' => {
+                    accidental = match c {
+                        '#' => Accidental::Sharp,
+                        'b' => Accidental::Flat,
+                        'n' => Accidental::Natural
+                },
+                '0'..'9' =>
                 _ => {}
 
             }
@@ -42,26 +52,27 @@ impl Document {
     }
 
     pub fn parse(&mut self, input: String) -> Result<()> {
+        let mut bar_buffer = String::new();
         let mut buffer = String::new();
         let mut state = ParsingState::Text;
 
-        for c in input.chars() {
+        for (_i, c) in input.chars().enumerate() {
             match (c, state.clone()) {
                 ('|', ParsingState::Text) => {
                     self.data.push(Element::PlainText(buffer.clone()));
-                    buffer.clear();
+                    bar_buffer.clear();
                     state = ParsingState::Bar;
                 },
                 ('|', ParsingState::Bar) => {
-                    let bar = Self::parse_bar(buffer.clone());
+                    let bar = Self::parse_bar(bar_buffer.clone());
                     self.data.push(Element::Bar(bar));
-                    buffer.clear();
+                    bar_buffer.clear();
                     state = ParsingState::Text;
                 },
-                ('(', ParsingState::Bar) => {
-
+                _ => match state.clone() {
+                    ParsingState::Bar => bar_buffer.push(c),
+                    _ => buffer.push(c),
                 }
-                _ => buffer.push(c)
             }
         }
 
